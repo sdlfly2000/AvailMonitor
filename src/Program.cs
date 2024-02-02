@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Serilog;
 using System.Collections.Concurrent;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Http.Logging;
 
 namespace AvailMonitor
 {
@@ -48,6 +51,26 @@ namespace AvailMonitor
             {
                 Log.Information("Status: {code}, Call: {uri}", result.Value, result.Key);
             }
+        }
+
+        private static IHost CreateDefaultHost(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureServices(
+                    (context, services) =>
+                    {
+                        services
+                            .AddSerilog(configure => configure.ReadFrom.Configuration(context.Configuration))
+                            .AddHttpClient("Available Checker",
+                                httpClient => httpClient.Timeout = TimeSpan.FromSeconds(10))
+                            .ConfigureHttpMessageHandlerBuilder(
+                                (builder) => builder.PrimaryHandler = new HttpClientHandler 
+                                {
+                                    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+                                });
+
+                    })
+                .Build();
         }
     }
 }
