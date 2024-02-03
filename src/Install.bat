@@ -1,0 +1,1 @@
+﻿sc create "RMP Health Monitor" type=share start=auto binpath= 
