@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace AvailMonitor
 {
@@ -13,22 +14,20 @@ namespace AvailMonitor
 
         private static IHost CreateDefaultHost(string[] args)
         {
-            return Host.CreateDefaultBuilder(args)
-                .ConfigureServices(
-                    (context, services) =>
-                    {
-                        services
-                            .AddSerilog(configure => configure.ReadFrom.Configuration(context.Configuration))
-                            .AddHostedService<Worker>()
-                            .AddHttpClient("Available Checker",
-                                httpClient => httpClient.Timeout = TimeSpan.FromSeconds(10))
-                            .ConfigureHttpMessageHandlerBuilder(
-                                (builder) => builder.PrimaryHandler = new HttpClientHandler 
-                                {
-                                    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-                                });
-                    })
-                .Build();
+            var builder = Host.CreateApplicationBuilder(args);
+            builder.Configuration.AddJsonFile("appsettings.json");
+            builder.Services
+                .AddWindowsService(option => { option.ServiceName = "Health Monitor"; })
+                .AddHostedService<Worker>()
+                .AddSerilog(configure => configure.ReadFrom.Configuration(builder.Configuration))
+                .AddHttpClient("Available Checker", httpClient => httpClient.Timeout = TimeSpan.FromSeconds(10))
+                .ConfigureHttpMessageHandlerBuilder(
+                (builder) => builder.PrimaryHandler = new HttpClientHandler
+                {
+                    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+                });
+
+            return builder.Build();
         }
     }
 }
