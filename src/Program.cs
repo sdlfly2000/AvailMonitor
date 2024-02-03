@@ -15,12 +15,12 @@ namespace AvailMonitor
         {
             var builder = Host.CreateApplicationBuilder(args);
             builder.Services
-                .AddWindowsService(option => { option.ServiceName = "Health Monitor"; })
+                .AddWindowsService(option => { option.ServiceName = "HealthMonitor"; })
                 .AddHostedService<Worker>()
                 .AddSerilog(configure => configure.ReadFrom.Configuration(builder.Configuration))
                 .AddHttpClient("Available Checker", httpClient => httpClient.Timeout = TimeSpan.FromSeconds(10))
                 .ConfigureHttpMessageHandlerBuilder(
-                (builder) => builder.PrimaryHandler = new HttpClientHandler
+                (handlerBuilder) => handlerBuilder.PrimaryHandler = new HttpClientHandler
                 {
                     ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
                 });

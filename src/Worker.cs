@@ -37,7 +37,6 @@ namespace AvailMonitor
         {
             _tasks.Clear();
             _timer = new Timer(OnTimeJob, stoppingToken, DelayExecTimeInMs, DelayExecTimeInMs);
-            OnTimeJob(stoppingToken);
             return Task.CompletedTask;
         }
 
@@ -75,7 +74,7 @@ namespace AvailMonitor
                 token));
             }
 
-            Task.WhenAll(_tasks).Wait();
+            Task.WhenAll(_tasks).Wait(token);
 
             _tasks.ForEach(task => Log.Information("Status: {code}, Call: {uri}", task.Result.Result, task.Result.Url));
         }

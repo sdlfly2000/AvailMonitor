@@ -1,15 +1,7 @@
 {
   "profiles": {
-    "AvailMonitor-Dev": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
-    },
-    "AvailMonitor-Prod": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Production"
+    "AvailMonitor": {
+      "commandName": "Project"
       }
     }
   }
