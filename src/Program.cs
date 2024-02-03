@@ -15,7 +15,6 @@ namespace AvailMonitor
         private static IHost CreateDefaultHost(string[] args)
         {
             var builder = Host.CreateApplicationBuilder(args);
-            builder.Configuration.AddJsonFile("appsettings.json");
             builder.Services
                 .AddWindowsService(option => { option.ServiceName = "Health Monitor"; })
                 .AddHostedService<Worker>()
