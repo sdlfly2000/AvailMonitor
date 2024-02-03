@@ -19,6 +19,7 @@ namespace AvailMonitor
                     {
                         services
                             .AddSerilog(configure => configure.ReadFrom.Configuration(context.Configuration))
+                            .AddHostedService<Worker>()
                             .AddHttpClient("Available Checker",
                                 httpClient => httpClient.Timeout = TimeSpan.FromSeconds(10))
                             .ConfigureHttpMessageHandlerBuilder(
@@ -26,7 +27,6 @@ namespace AvailMonitor
                                 {
                                     ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
                                 });
-
                     })
                 .Build();
         }
