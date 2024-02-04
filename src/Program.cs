@@ -1,31 +1,19 @@
-﻿using Serilog;
+﻿using AvailMonitor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
-namespace AvailMonitor
-{
-    public class Program
-    {
-        public static void Main(string[] args)
+var builder = Host.CreateApplicationBuilder(args);
+builder.Services
+    .AddSerilog(configure => configure.ReadFrom.Configuration(builder.Configuration))
+    .AddHostedService<Worker>()
+    .AddLogging()
+    .AddHttpClient("Available Checker", httpClient => httpClient.Timeout = TimeSpan.FromSeconds(10))
+    .ConfigurePrimaryHttpMessageHandler(
+        (handlerBuilder) => new HttpClientHandler
         {
-            CreateDefaultHost(args).Run();
-        }
+            ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+        });
 
-        private static IHost CreateDefaultHost(string[] args)
-        {
-            var builder = Host.CreateApplicationBuilder(args);
-            builder.Services
-                .AddWindowsService(option => { option.ServiceName = "HealthMonitor"; })
-                .AddHostedService<Worker>()
-                .AddSerilog(configure => configure.ReadFrom.Configuration(builder.Configuration))
-                .AddHttpClient("Available Checker", httpClient => httpClient.Timeout = TimeSpan.FromSeconds(10))
-                .ConfigureHttpMessageHandlerBuilder(
-                (handlerBuilder) => handlerBuilder.PrimaryHandler = new HttpClientHandler
-                {
-                    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
-                });
-
-            return builder.Build();
-        }
-    }
-}
+var host = builder.Build();
+host.Run();
