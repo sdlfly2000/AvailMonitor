@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace AvailMonitor;
@@ -11,7 +10,7 @@ public class Worker: BackgroundService
     private readonly IConfiguration _configuration;
     private readonly long DelayExecTimeInMs;
 
-    private Timer _timer;
+    private Timer? _timer;
     private List<Task<AvailResult>> _tasks;
 
     public Worker(
@@ -24,6 +23,12 @@ public class Worker: BackgroundService
         _tasks = new List<Task<AvailResult>>();
     }
 
+    public override Task StartAsync(CancellationToken cancellationToken)
+    {
+        Log.Information("---Monitor Started---");
+        return base.StartAsync(cancellationToken);
+    }
+
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _timer = new Timer(OnTimeJob, stoppingToken, 0, DelayExecTimeInMs);
@@ -33,8 +38,14 @@ public class Worker: BackgroundService
 
     public override Task StopAsync(CancellationToken cancellationToken)
     {
-        _timer.Change(Timeout.Infinite, Timeout.Infinite);
-        _timer.Dispose();
+        Log.Information("---Monitor End---");
+
+        if (_timer != null)
+        {
+            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+            _timer.Dispose();
+        }
+
         return base.StopAsync(cancellationToken);
     }
 
@@ -56,27 +67,30 @@ public class Worker: BackgroundService
         {
             if (target.Value == null) continue;
 
-            _tasks.Add(Task<AvailResult>.Factory.StartNew((states) =>
-            {
-                var param = states as AvailParams;
-                try
-                {
-                    var response = param!.HttpClient.GetAsync(param.Target.Value).GetAwaiter().GetResult();
-                    param.HttpClient.Dispose();
-                    return new AvailResult(param.Target.Value!, response.StatusCode.ToString());
-                }
-                catch (Exception e)
-                {
-                    return new AvailResult(param!.Target.Value!, e.Message);
-                }
-            },
-            new AvailParams(_httpClientFactory.CreateClient(), target),
-            token));
+            _tasks.Add(Task<AvailResult>.Factory.StartNew(
+                TriggerMonitorTask, 
+                new AvailParams(_httpClientFactory.CreateClient(), target),
+                token));
         }
 
         Task.WhenAll(_tasks).Wait(token);
 
         _tasks.ForEach(task => Log.Information("Status: {code}, Call: {uri}", task.Result.Result, task.Result.Url));
+    }
+
+    private AvailResult TriggerMonitorTask(object? states)
+    {
+        var param = states as AvailParams;
+        try
+        {
+            var response = param!.HttpClient.GetAsync(param.Target.Value).GetAwaiter().GetResult();
+            param.HttpClient.Dispose();
+            return new AvailResult(param.Target.Value!, response.StatusCode.ToString());
+        }
+        catch (Exception e)
+        {
+            return new AvailResult(param!.Target.Value!, e.Message);
+        }
     }
 
     private record AvailParams(HttpClient HttpClient, KeyValuePair<string, string?> Target);
