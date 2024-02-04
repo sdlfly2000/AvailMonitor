@@ -9,7 +9,6 @@ public class Worker: BackgroundService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
-    private readonly ILogger<Worker> _logger;
     private readonly long DelayExecTimeInMs;
 
     private Timer _timer;
@@ -17,12 +16,10 @@ public class Worker: BackgroundService
 
     public Worker(
         IHttpClientFactory httpClientFactory,
-        IConfiguration configuration,
-        ILogger<Worker> logger)
+        IConfiguration configuration)
     {
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
-        _logger = logger;
         DelayExecTimeInMs = long.Parse(_configuration.GetSection("ExecEveryMs").Value!);
         _tasks = new List<Task<AvailResult>>();
     }

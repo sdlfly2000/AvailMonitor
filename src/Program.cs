@@ -5,9 +5,9 @@ using Serilog;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services
+    .AddWindowsService(option => option.ServiceName = builder.Configuration["Serilog:Properties:Application"]! )
     .AddSerilog(configure => configure.ReadFrom.Configuration(builder.Configuration))
     .AddHostedService<Worker>()
-    .AddLogging()
     .AddHttpClient("Available Checker", httpClient => httpClient.Timeout = TimeSpan.FromSeconds(10))
     .ConfigurePrimaryHttpMessageHandler(
         (handlerBuilder) => new HttpClientHandler
