@@ -23,6 +23,12 @@ namespace AvailMonitor
             _tasks = new List<Task<AvailResult>>();
         }
 
+        public override Task StartAsync(CancellationToken cancellationToken)
+        {
+            _timer = new Timer(OnTimeJob, cancellationToken, DelayExecTimeInMs, DelayExecTimeInMs);
+            return base.StartAsync(cancellationToken);
+        }
+
         public override Task StopAsync(CancellationToken cancellationToken)
         {
             if (_timer != null)
@@ -36,7 +42,6 @@ namespace AvailMonitor
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _tasks.Clear();
-            _timer = new Timer(OnTimeJob, stoppingToken, DelayExecTimeInMs, DelayExecTimeInMs);
             return Task.CompletedTask;
         }
 
