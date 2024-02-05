@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvailMonitor", "src\AvailMonitor.csproj", "{2F8C5760-4C7D-44B6-9460-E13B91333A61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor", "Monitor\Monitor.csproj", "{4B5E653A-1C35-44E0-9968-46FEEAF95D17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{2F8C5760-4C7D-44B6-9460-E13B91333A61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F8C5760-4C7D-44B6-9460-E13B91333A61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F8C5760-4C7D-44B6-9460-E13B91333A61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B5E653A-1C35-44E0-9968-46FEEAF95D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B5E653A-1C35-44E0-9968-46FEEAF95D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B5E653A-1C35-44E0-9968-46FEEAF95D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B5E653A-1C35-44E0-9968-46FEEAF95D17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
