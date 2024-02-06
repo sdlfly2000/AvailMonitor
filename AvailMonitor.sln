@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvailMonitor", "src\AvailMonitor.csproj", "{2F8C5760-4C7D-44B6-9460-E13B91333A61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvailMonitor", "src\AvailMonitor\AvailMonitor.csproj", "{2F8C5760-4C7D-44B6-9460-E13B91333A61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor", "Monitor\Monitor.csproj", "{4B5E653A-1C35-44E0-9968-46FEEAF95D17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitor", "src\Monitor\Monitor.csproj", "{4B5E653A-1C35-44E0-9968-46FEEAF95D17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
