@@ -11,7 +11,7 @@
         Title="MainWindow" Height="250" Width="400"
         Closing="WindowClosing">
     <Window.DataContext>
-        <local:MainWindowViewModel/>
+        <local:MainWindowViewModel x:Name="WindowViewModel"/>
     </Window.DataContext>
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <Button Name="btnStartMonitor" Click="StartMonitor" Margin="10">Start Monitor</Button>

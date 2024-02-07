@@ -43,6 +43,7 @@ namespace Monitor
         private void WindowClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             WindowState = WindowState.Minimized;
+            WindowViewModel.ShowInTaskbar = false;
             e.Cancel = true;
         }
 
